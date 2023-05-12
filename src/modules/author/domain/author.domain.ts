@@ -8,8 +8,4 @@ export class Author extends Base {
   password: string;
   status: string;
   books?: Book[];
-
-  changePassword() {
-    console.log('hola');
-  }
 }

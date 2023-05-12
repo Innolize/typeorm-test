@@ -3,46 +3,59 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Author } from '@modules/author/domain/author.domain';
 
-import { AuthorService } from '../application/service/author.service';
+import { BookEntity } from '@/modules/book/infrastructure/persistence/entities/book.entity';
+
+import { AuthorEntity } from '../infrastructure/persistence/entities/author.entity';
 import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
 
 @Controller('author')
 export class AuthorController {
-  constructor(private readonly authorService: AuthorService) {}
+  constructor(
+    @InjectRepository(AuthorEntity)
+    private readonly authorRepository: Repository<AuthorEntity>,
+    @InjectRepository(BookEntity)
+    private readonly bookRepository: Repository<BookEntity>,
+  ) {}
 
   @Post()
   async create(@Body() author: CreateAuthorDto): Promise<Author> {
-    return this.authorService.create(author);
+    const book = await this.bookRepository.findOneBy({ id: author.bookId });
+    const book2 = await this.bookRepository.findOneBy({
+      id: author.bookId + 1,
+    });
+    const book3 = await this.bookRepository.findOneBy({
+      id: author.bookId + 2,
+    });
+    const foundAuthor = await this.authorRepository.findOneBy({
+      id: 1,
+    });
+    foundAuthor.authorBookEntity = [
+      { books: book },
+      { books: book2 },
+      { books: book3 },
+    ];
+
+    return await this.authorRepository.save(foundAuthor);
   }
 
   @Get()
-  async findAll(): Promise<Author[]> {
-    return this.authorService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Author> {
-    return this.authorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateAuthor: UpdateAuthorDto,
-  ): Promise<Author> {
-    return this.authorService.update(+id, updateAuthor);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.authorService.remove(+id);
+  async get(): Promise<Author[]> {
+    return await this.authorRepository.find({
+      relations: {
+        authorBookEntity: {
+          books: true,
+        },
+      },
+    });
   }
 }

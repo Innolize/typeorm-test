@@ -18,10 +18,8 @@ export class BookService {
   ) {}
 
   async create(createBookDto: CreateBookDto): Promise<Book> {
-    const author = await this.authorService.findOne(createBookDto.author);
     try {
       const book = this.mapperService.dtoToClass(createBookDto, new Book());
-      book.author = author;
       return await this.bookRepository.create(book);
     } catch (error) {
       throw new HttpException(error.message, 404);

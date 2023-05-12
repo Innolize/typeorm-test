@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 
 import { Status } from '@/modules/author/domain/status.enum';
 
@@ -14,4 +14,7 @@ export class CreateAuthorDto {
 
   @IsEnum(Status)
   status: string;
+
+  @IsNumber()
+  bookId: number;
 }

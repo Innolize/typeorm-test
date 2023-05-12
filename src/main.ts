@@ -10,7 +10,7 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   await app.listen(configService.get('server.port'));

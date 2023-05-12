@@ -26,7 +26,7 @@ export class BookMysqlRepository implements BookRepository {
   async findById(id: number): Promise<Book> {
     const bookEntity = await this.bookRepository.findOne({
       where: { id },
-      relations: { author: true },
+      relations: { authorBookEntity: true },
     });
     return this.mapperService.entityToClass(bookEntity, new Book());
   }

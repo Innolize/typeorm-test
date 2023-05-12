@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CommonModule } from '@common/common.module';
@@ -11,9 +11,20 @@ import { BookService } from './application/service/book.service';
 import { BookController } from './controllers/book.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BookEntity]), AuthorModule, CommonModule],
+  imports: [
+    TypeOrmModule.forFeature([BookEntity]),
+    forwardRef(() => AuthorModule),
+    CommonModule,
+  ],
   controllers: [BookController],
   providers: [
+    BookService,
+    {
+      provide: 'BOOK_REPOSITORY',
+      useClass: BookMysqlRepository,
+    },
+  ],
+  exports: [
     BookService,
     {
       provide: 'BOOK_REPOSITORY',

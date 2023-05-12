@@ -1,6 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-import { AuthorEntity } from '@modules/author/infrastructure/persistence/entities/author.entity';
+import { AuthorBookEntity } from '@/modules/author/infrastructure/persistence/entities/author-book.entity';
 
 @Entity('book')
 export class BookEntity {
@@ -13,6 +20,10 @@ export class BookEntity {
   @Column()
   format: string;
 
-  @ManyToOne(() => AuthorEntity, (author) => author.books)
-  author: AuthorEntity;
+  @OneToMany(
+    () => AuthorBookEntity,
+    (authorBookEntity) => authorBookEntity.books,
+    { cascade: true },
+  )
+  authorBookEntity?: AuthorBookEntity[];
 }

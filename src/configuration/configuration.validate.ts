@@ -8,6 +8,4 @@ export const configurationValidate = Joi.object({
   DB_USERNAME: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
   DB_NAME: Joi.string().required(),
-  SONAR_SERVER_URL: Joi.string().required(),
-  SONAR_TOKEN: Joi.string().required(),
 });

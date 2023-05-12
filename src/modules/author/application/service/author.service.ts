@@ -4,7 +4,6 @@ import { MapperService } from '@common/application/mapper/mapper.service';
 import { UtilsService } from '@common/infrastructure/utils/utils.service';
 
 import { AuthorRepository } from '@modules/author/application/repository/author.repository';
-import { CreateAuthorDto } from '@modules/author/controllers/dto/create-author.dto';
 import { UpdateAuthorDto } from '@modules/author/controllers/dto/update-author.dto';
 import { Author } from '@modules/author/domain/author.domain';
 
@@ -16,17 +15,9 @@ export class AuthorService {
     private readonly mapperService: MapperService,
     private readonly utilsService: UtilsService,
   ) {}
-  async create(createAuthorDto: CreateAuthorDto): Promise<Author> {
+  async create(author: Author): Promise<Author> {
     try {
-      const author: Author = this.mapperService.dtoToClass(
-        createAuthorDto,
-        new Author(),
-      );
-
-      const response: Author = await this.authorRepository.create(author);
-      return this.utilsService.removePropertiesFromObject(response, [
-        'password',
-      ]);
+      return await this.authorRepository.create(author);
     } catch (error) {
       throw new HttpException(error.message, 404);
     }

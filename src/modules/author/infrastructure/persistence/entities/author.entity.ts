@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { BookEntity } from '@modules/book/infrastructure/persistence/entities/book.entity';
+import { AuthorBookEntity } from './author-book.entity';
 
 @Entity('author')
 export class AuthorEntity {
@@ -21,6 +21,10 @@ export class AuthorEntity {
   })
   status: string;
 
-  @OneToMany(() => BookEntity, (books) => books.author)
-  books?: BookEntity[];
+  @OneToMany(
+    () => AuthorBookEntity,
+    (authorBookEntity) => authorBookEntity.author,
+    { cascade: true },
+  )
+  authorBookEntity?: AuthorBookEntity[];
 }
